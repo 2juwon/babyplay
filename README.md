@@ -44,3 +44,7 @@ python3 -m http.server 8000
 - **로얄 스매시** (`games/royal-smash`): 대포로 구슬을 쏴 원탁 위 블록을 떨어뜨려요. 게임 본체는 [2juwon/royal-smash](https://github.com/2juwon/royal-smash)에 있고, 여기서는 홈 버튼을 얹어 iframe으로 불러와요.
 - **모양 맞추기** (`games/shapes`): 웃는 얼굴 모양 블록을 끌어서 나무판의 같은 모양 구멍에 넣어요. 3개로 시작해 한 판 끝날 때마다 하나씩 늘어요(최대 6개). 블록을 톡 누르면 폴짝 뛰며 이름을 말해 주고, 잠시 가만히 있으면 손가락이 어디 넣는지 알려 줘요.
 - **알 키우기** (`games/egg`): 알을 톡톡 두드리면 금이 가고 흔들리다가 동물이 태어나요. 동물 20마리를 아래 도감에 모아요(안 나온 동물부터 태어나요). 동물 소리는 무료 녹음 파일(`games/egg/sounds/`, 출처는 `CREDITS.md`)이고, 태어난 동물을 누르면 다시 울어요(가끔 빠르고 높은 목소리·느리고 굵은 목소리). 도감은 localStorage에 저장.
+
+## 소리 출처
+
+- 손전등 게임 고양이 소리(`games/flashlight/sounds/meow*.mp3`): Kerzoven, [Cat Purr & Meow](https://opengameart.org/content/cat-purr-meow) — CC0. 잘라내고 잡음 줄이고 크기를 맞춰 mp3로 바꿨어요.

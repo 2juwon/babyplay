@@ -63,7 +63,12 @@ const COLS=['#3b4a7a','#5a3f6e','#2f5d62','#6b4a3a','#44507f','#4d3b5e','#375a7f
 
 /* ---------- 소리 ---------- */
 let ac=null;
-function au(){try{if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume()}catch(e){}}
+function au(){try{if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();loadMeows()}catch(e){}}
+/* 진짜 고양이 소리(CC0, Kerzoven @ OpenGameArt). 못 불러오면 합성음으로 대신해요 */
+const MEOWS=['sounds/meow1.mp3','sounds/meow2.mp3','sounds/meow3.mp3'];let meowBuf=[],meowLoading=false,lastMeow=-1;
+function loadMeows(){if(meowLoading||!ac)return;meowLoading=true;
+  MEOWS.forEach(u=>fetch(u).then(r=>r.arrayBuffer()).then(b=>new Promise((ok,no)=>ac.decodeAudioData(b,ok,no))).then(d=>meowBuf.push(d)).catch(()=>{}))}
+function playBuf(buf,v){const src=ac.createBufferSource(),g=ac.createGain();src.buffer=buf;g.gain.value=v;src.connect(g).connect(ac.destination);src.start()}
 function tone(f,d,type,w,v,f2){if(!ac)return;const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime+(w||0);o.type=type||'sine';o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(v||.2,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g).connect(ac.destination);o.start(t);o.stop(t+d+.05)}
 const sDing=()=>{tone(880,.15,'triangle',0,.18);tone(1320,.2,'triangle',.1,.14)};
 const SIREN=4,PER=.6;
@@ -81,7 +86,9 @@ function meow(w,k){if(!ac)return;const t=ac.currentTime+w,d=.62*k;
   f.type='bandpass';f.Q.value=2.5;f.frequency.setValueAtTime(900,t);f.frequency.linearRampToValueAtTime(2000,t+d*.3);f.frequency.linearRampToValueAtTime(850,t+d);
   g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.5,t+.06);g.gain.setValueAtTime(.5,t+d*.6);g.gain.exponentialRampToValueAtTime(.001,t+d);
   o.connect(f);o2.connect(f);f.connect(g).connect(ac.destination);for(const x of[o,o2,lfo]){x.start(t);x.stop(t+d+.05)}}
-const sMeow=()=>{meow(0,1);if(Math.random()<.5)meow(.75,.7)};
+const sMeow=()=>{if(!ac)return;
+  if(meowBuf.length){let i=Math.floor(Math.random()*meowBuf.length);if(meowBuf.length>1&&i===lastMeow)i=(i+1)%meowBuf.length;lastMeow=i;playBuf(meowBuf[i],1);return}
+  meow(0,1);if(Math.random()<.5)meow(.75,.7)};
 const sSqueak=()=>{tone(2400,.07,'square',0,.04,3200);tone(2600,.07,'square',.1,.04,3400);tone(2200,.09,'square',.2,.035,3000)};
 const sWin=()=>{[523,659,784,1047,784,1047,1319].forEach((f,i)=>tone(f,.3,'triangle',i*.14,.2))};
 
