@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>태오플레이</title>
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<style>
+/* VOICE: 문 열면 신나는 장난감 놀이방
+IDEA: 뚜껑이 열린 장난감 상자에서 놀이가 튀어나오는 순간
+PICTURE: 화면 가운데 큰 장난감 상자, 위로 별·공·손전등이 통통 튀어요
+COLOUR/TYPE: 햇살 노랑 바탕, 빨간 상자, 하늘·민트 포인트; Jua
+LAYOUT: 제목, 그림, 큰 시작 버튼을 한 줄로 세로 배치 */
+:root{color-scheme:light;--bg:#ffe48a;--ink:#3a2600}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:17px/1.4 Jua,system-ui,sans-serif;overflow:hidden;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+body{background:radial-gradient(circle at 12% 8%,#fff6c9 0 16%,transparent 17%),radial-gradient(circle at 92% 92%,#ffd23f 0 26%,transparent 27%),radial-gradient(circle at 95% 15%,#ffefb0 0 9%,transparent 10%),var(--bg)}
+main{height:100vh;height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(10px,2.5vh,22px);padding:24px 16px;text-align:center}
+h1{margin:0;font-weight:400;font-size:clamp(52px,15vw,96px);line-height:1;color:#e23b3b;text-shadow:0 5px 0 #8f1f1f,0 10px 0 rgba(120,60,0,.15);letter-spacing:.02em}
+h1 span{display:inline-block;animation:hop 2.4s ease-in-out infinite}
+h1 span:nth-child(2){animation-delay:.12s;color:#2f8fd8;text-shadow:0 5px 0 #1b5a8a}
+h1 span:nth-child(3){animation-delay:.24s;color:#2fa86a;text-shadow:0 5px 0 #1b6a42}
+h1 span:nth-child(4){animation-delay:.36s;color:#ff8a1a;text-shadow:0 5px 0 #a8540a}
+h1 span:nth-child(5){animation-delay:.48s;color:#9a5bd8;text-shadow:0 5px 0 #5e3189}
+@keyframes hop{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-14px)}}
+.sub{margin:0;font-size:clamp(18px,4.6vw,24px);opacity:.75}
+.art{width:min(78vw,46vh,420px);aspect-ratio:1}
+.art svg{width:100%;height:100%;display:block;overflow:visible}
+.pop{animation:pop 2.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.pop.b{animation-delay:.4s}.pop.c{animation-delay:.8s}
+@keyframes pop{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-10px) rotate(6deg)}}
+.go{display:inline-flex;align-items:center;gap:12px;font-size:clamp(26px,6.5vw,34px);padding:16px 44px;min-height:72px;border-radius:999px;background:#e23b3b;color:#fff;text-decoration:none;box-shadow:0 8px 0 #8f1f1f}
+.go:active{transform:translateY(6px);box-shadow:0 2px 0 #8f1f1f}
+.go:focus-visible{outline:4px solid var(--ink);outline-offset:4px}
+.go svg{width:30px;height:30px}
+@media(prefers-reduced-motion:reduce){h1 span,.pop{animation:none}}
+</style></head><body>
+<main>
+  <h1 aria-label="태오플레이"><span>태</span><span>오</span><span>플</span><span>레</span><span>이</span></h1>
+  <p class="sub">태오의 놀이 상자</p>
+  <div class="art" aria-hidden="true">
+    <svg viewBox="0 0 300 300">
+      <ellipse cx="150" cy="282" rx="110" ry="12" fill="rgba(120,70,0,.18)"/>
+      <!-- 튀어나오는 것들 -->
+      <g class="pop"><circle cx="92" cy="92" r="30" fill="#2f8fd8"/><path d="M62 92 Q92 70 122 92" fill="none" stroke="#fff" stroke-width="6"/><circle cx="82" cy="80" r="6" fill="#fff" opacity=".6"/></g>
+      <g class="pop b"><path d="M150 18 l11 23 25 3 -18 17 5 25 -23 -12 -23 12 5 -25 -18 -17 25 -3z" fill="#ffd23f" stroke="#c98d00" stroke-width="4" stroke-linejoin="round"/></g>
+      <g class="pop c" transform="rotate(-25 222 96)"><rect x="196" y="84" width="46" height="22" rx="6" fill="#2fa86a"/><path d="M242 78 L258 72 L258 118 L242 112 Z" fill="#ffd23f"/><path d="M258 80 L292 62 L292 128 L258 110 Z" fill="#fff3c4" opacity=".7"/></g>
+      <!-- 상자 -->
+      <path d="M58 150 L150 128 L242 150 L150 172 Z" fill="#8f1f1f"/>
+      <path d="M58 150 L150 172 L150 280 L58 258 Z" fill="#e23b3b"/>
+      <path d="M242 150 L150 172 L150 280 L242 258 Z" fill="#c22d2d"/>
+      <path d="M58 150 L30 112 L122 92 L150 128 Z" fill="#ff6b6b"/>
+      <path d="M242 150 L270 112 L178 92 L150 128 Z" fill="#ff8282"/>
+      <circle cx="104" cy="215" r="18" fill="#ffd23f"/><circle cx="196" cy="215" r="18" fill="#6be3ff"/>
+      <path d="M96 213 q8 10 16 0" fill="none" stroke="#3a2600" stroke-width="4" stroke-linecap="round"/>
+      <path d="M188 213 q8 10 16 0" fill="none" stroke="#3a2600" stroke-width="4" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <a class="go" href="menu.html">놀러 가기
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l8 7-8 7" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
+</main>
+</body></html>

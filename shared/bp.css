@@ -1,0 +1,5 @@
+/* babyplay 공통 스타일: 모든 게임 페이지에서 불러와요 */
+.bp-home{display:inline-grid;place-items:center;flex:none;width:52px;height:52px;border-radius:50%;background:#ffd23f;box-shadow:0 4px 0 #b88400;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.bp-home:active{transform:translateY(3px);box-shadow:0 1px 0 #b88400}
+.bp-home:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.bp-home svg{width:30px;height:30px}
