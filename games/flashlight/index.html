@@ -34,7 +34,7 @@ button:active{transform:translateY(4px);box-shadow:0 2px 0 #b88400}
 button:focus-visible{outline:3px solid #fff;outline-offset:4px}
 </style></head><body>
 <div class="app">
-  <header><div class="hl"><a class="bp-home" href="../../" aria-label="홈으로"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5" fill="none" stroke="#3a2600" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10v9.5h4.5V15h3v4.5H18V10" fill="#3a2600"/></svg></a><h1>도둑을 찾아라!</h1></div><div class="stars" id="stars" aria-label="잡은 도둑 수"></div></header>
+  <header><div class="hl"><a class="bp-home" href="../../menu.html" aria-label="홈으로"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5" fill="none" stroke="#3a2600" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10v9.5h4.5V15h3v4.5H18V10" fill="#3a2600"/></svg></a><h1>도둑을 찾아라!</h1></div><div class="stars" id="stars" aria-label="잡은 도둑 수"></div></header>
   <div class="stage">
     <canvas id="c" aria-label="손가락으로 어두운 마을을 비춰 숨은 도둑을 찾는 게임"></canvas>
     <div class="win" id="win"><div class="card"><p>태오 최고!<br>도둑을 다 잡았어요!</p><button id="again">또 하기</button></div></div>
@@ -61,6 +61,7 @@ function tone(f,d,type,w,v,f2){if(!ac)return;const o=ac.createOscillator(),g=ac.
 const sDing=()=>{tone(880,.15,'triangle',0,.18);tone(1320,.2,'triangle',.1,.14)};
 const sCatch=()=>{for(let i=0;i<6;i++)tone(i%2?960:720,.2,'square',i*.2,.05);[523,659,784,1047].forEach((f,i)=>tone(f,.3,'triangle',1.25+i*.12,.2))};
 const sMeow=()=>{tone(780,.45,'sawtooth',0,.05,420);tone(1560,.45,'sine',0,.04,840)};
+const sSqueak=()=>{tone(2400,.07,'square',0,.04,3200);tone(2600,.07,'square',.1,.04,3400);tone(2200,.09,'square',.2,.035,3000)};
 const sWin=()=>{[523,659,784,1047,784,1047,1319].forEach((f,i)=>tone(f,.3,'triangle',i*.14,.2))};
 
 /* ---------- 마을 만들기 ---------- */
@@ -90,7 +91,38 @@ function newRound(){
   for(let i=0;i<nb;i++){const b=bld[Math.floor(i*bld.length/nb)+ (i%2)],x=b.x+b.w*rnd(.3,.7);props.push({k:'bin',x,y:G,w:s*.6,h:s*.5});spots.push({x,y:G,k:'bin'})}
   const ts=pick(spots);let cs;do{cs=pick(spots)}while(cs===ts&&spots.length>1);
   thief={x:ts.x,y:ts.y,s,k:ts.k};cat={x:cs.x,y:cs.y,s:s*.8,k:cs.k};
+  bats=[spawnBat(),spawnBat()];
   state='hide';found=0;dinged=false;catLit=false;
+}
+
+/* ---------- 박쥐 ---------- */
+let bats=[];
+function spawnBat(){return{x:rnd(W*.1,W*.9),y:rnd(G*.12,G*.45),s:S*.13,st:'idle',vx:0,vy:0,p:Math.random()*6,back:0}}
+function updBats(t,dt){
+  bats.forEach((b,i)=>{
+    if(b.st==='idle'){
+      if(touched&&Math.hypot(light.x-b.x,light.y-b.y)<R()*.55){b.st='fly';b.vx=(light.x<b.x?1:-1)*rnd(260,360);b.vy=-rnd(120,220);sSqueak()}
+    }else if(b.st==='fly'){
+      b.x+=b.vx*dt;b.y+=b.vy*dt;b.vy+=Math.sin(t*6+b.p)*40*dt;
+      if(b.x<-b.s*2||b.x>W+b.s*2||b.y<-b.s*2){b.st='gone';b.back=t+rnd(3,6)}
+    }else if(t>b.back){bats[i]=spawnBat()}
+  });
+}
+function drawBat(b,t){
+  if(b.st==='gone')return;
+  const s=b.s,fast=b.st==='fly',f=Math.sin(t*(fast?22:5)+b.p),bob=fast?0:Math.sin(t*2+b.p)*s*.1;
+  ctx.save();ctx.translate(b.x,b.y+bob);if(fast&&b.vx<0)ctx.scale(-1,1);
+  ctx.fillStyle='#3a2a5c';
+  for(const d of[-1,1]){ctx.save();ctx.scale(d,1);ctx.rotate(f*.45);
+    ctx.beginPath();ctx.moveTo(s*.1,-s*.05);ctx.quadraticCurveTo(s*.5,-s*.45,s*.95,-s*.1);
+    ctx.quadraticCurveTo(s*.8,0,s*.7,s*.12);ctx.quadraticCurveTo(s*.6,0,s*.48,s*.15);ctx.quadraticCurveTo(s*.38,0,s*.26,s*.14);ctx.quadraticCurveTo(s*.2,s*.02,s*.1,s*.1);ctx.closePath();ctx.fill();ctx.restore()}
+  ell(0,s*.04,s*.17,s*.2,'#4b3873');
+  ctx.beginPath();ctx.moveTo(-s*.14,-s*.08);ctx.lineTo(-s*.1,-s*.3);ctx.lineTo(-s*.02,-s*.14);ctx.moveTo(s*.14,-s*.08);ctx.lineTo(s*.1,-s*.3);ctx.lineTo(s*.02,-s*.14);ctx.fillStyle='#4b3873';ctx.fill();
+  const e=fast?s*.055:s*.045;
+  ell(-s*.065,-s*.02,e,e,'#fff');ell(s*.065,-s*.02,e,e,'#fff');ell(-s*.06,-s*.015,e*.5,e*.5,'#222');ell(s*.07,-s*.015,e*.5,e*.5,'#222');
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.moveTo(-s*.05,s*.08);ctx.lineTo(-s*.03,s*.14);ctx.lineTo(-s*.01,s*.08);ctx.moveTo(s*.01,s*.08);ctx.lineTo(s*.03,s*.14);ctx.lineTo(s*.05,s*.08);ctx.fill();
+  ell(-s*.11,s*.06,s*.03,s*.02,'rgba(255,120,160,.6)');ell(s*.11,s*.06,s*.03,s*.02,'rgba(255,120,160,.6)');
+  ctx.restore();
 }
 
 /* ---------- 그리기 도구 ---------- */
@@ -191,12 +223,14 @@ function draw(ts){
     const cd=Math.hypot(light.x-cat.x,light.y-(cat.y-cat.s*.4));
     if(touched&&cd<R()*.55){if(!catLit){sMeow();catLit=true}}else if(cd>R()*.9)catLit=false;
   }
+  updBats(t,dt);
   reveal+=((state==='caught'?1:0)-reveal)*Math.min(1,dt*3);
 
   drawScene(t);
   const tm=state==='caught'?'caught':found>0?'lit':'hide';
   if(thief.k==='gap'||tm==='caught'){drawCat(cat,t);drawProps();drawThief(thief,t,tm)}
   else{drawCat(cat,t);drawThief(thief,t,tm);drawProps()}
+  bats.forEach(b=>drawBat(b,t));
 
   dc.globalCompositeOperation='source-over';dc.clearRect(0,0,W,H);
   dc.fillStyle=`rgba(4,7,22,${.985-reveal*.7})`;dc.fillRect(0,0,W,H);
