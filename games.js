@@ -7,5 +7,13 @@ window.BP_GAMES = [
     path: 'games/flashlight/',
     thumb: 'games/flashlight/thumb.svg',
     color: '#1b2350'
+  },
+  {
+    id: 'royal-smash',
+    title: '로얄 스매시',
+    desc: '구슬을 쏴서 블록을 와르르 무너뜨려요',
+    path: 'games/royal-smash/',
+    thumb: 'games/royal-smash/thumb.svg',
+    color: '#5aa9ff'
   }
 ];
