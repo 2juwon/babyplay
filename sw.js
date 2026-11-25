@@ -1,7 +1,7 @@
 /* 태오플레이 서비스 워커 — 앱 설치 + 한 번 연 화면은 인터넷이 잠깐 끊겨도 열리게.
  * 늘 새 버전을 먼저 받아 오고(네트워크 먼저), 안 되면 저장해 둔 걸 보여 줘요.
  * /babyplay/ 안의 요청만 맡아요(로얄 스매시 본체 같은 다른 경로는 건드리지 않음). */
-const CACHE = 'babyplay-v3';
+const CACHE = 'babyplay-v4';
 const CORE = ['./', 'index.html', 'menu.html', 'games.js', 'shared/bp.css', 'manifest.webmanifest',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png',
   'games/flashlight/', 'games/flashlight/thumb.svg', 'games/royal-smash/', 'games/royal-smash/thumb.svg'];

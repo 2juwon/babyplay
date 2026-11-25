@@ -66,7 +66,14 @@ let ac=null;
 function au(){try{if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume()}catch(e){}}
 function tone(f,d,type,w,v,f2){if(!ac)return;const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime+(w||0);o.type=type||'sine';o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(v||.2,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g).connect(ac.destination);o.start(t);o.stop(t+d+.05)}
 const sDing=()=>{tone(880,.15,'triangle',0,.18);tone(1320,.2,'triangle',.1,.14)};
-const sCatch=()=>{for(let i=0;i<6;i++)tone(i%2?960:720,.2,'square',i*.2,.05);[523,659,784,1047].forEach((f,i)=>tone(f,.3,'triangle',1.25+i*.12,.2))};
+const SIREN=4,PER=.6;
+const sCatch=()=>{if(!ac)return;const t=ac.currentTime,end=t+SIREN*PER;
+  const o=ac.createOscillator(),o2=ac.createOscillator(),f=ac.createBiquadFilter(),g=ac.createGain();
+  o.type='square';o2.type='sawtooth';o2.detune.value=10;f.type='lowpass';f.frequency.value=2600;
+  for(let i=0;i<SIREN;i++){const a=t+i*PER;for(const x of[o,o2]){x.frequency.setValueAtTime(620,a);x.frequency.linearRampToValueAtTime(1350,a+PER*.5);x.frequency.linearRampToValueAtTime(620,a+PER)}}
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.16,t+.05);g.gain.setValueAtTime(.16,end-.15);g.gain.exponentialRampToValueAtTime(.001,end);
+  o.connect(f);o2.connect(f);f.connect(g).connect(ac.destination);for(const x of[o,o2]){x.start(t);x.stop(end+.05)}
+  [523,659,784,1047].forEach((n,i)=>tone(n,.32,'triangle',SIREN*PER+.05+i*.12,.22))};
 function meow(w,k){if(!ac)return;const t=ac.currentTime+w,d=.62*k;
   const o=ac.createOscillator(),o2=ac.createOscillator(),lfo=ac.createOscillator(),lg=ac.createGain(),f=ac.createBiquadFilter(),g=ac.createGain();
   o.type='sawtooth';o2.type='triangle';o2.detune.value=1200;lfo.frequency.value=7;lg.gain.value=14;lfo.connect(lg);
@@ -103,7 +110,11 @@ function newRound(){
   bld.forEach(b=>{const x=b.x+b.w*rnd(.25,.75);props.push({k:'chim',x,y:G-b.h,w:s*.42,h:s*.5});spots.push({x,y:G-b.h,k:'chim'})});
   const nb=Math.max(2,Math.floor(bld.length/2));
   for(let i=0;i<nb;i++){const b=bld[Math.floor(i*bld.length/nb)+ (i%2)],x=b.x+b.w*rnd(.3,.7);props.push({k:'bin',x,y:G,w:s*.6,h:s*.5});spots.push({x,y:G,k:'bin'})}
-  const ts=pick(spots);let cs;do{cs=pick(spots)}while(cs===ts&&spots.length>1);
+  let ts=pick(spots);
+  if(touched){/* 마지막 손전등 자리에서 가장 먼 곳(비슷하게 먼 곳 몇 군데 중 하나)에 숨기 */
+    const ds=spots.map(p=>Math.hypot(p.x-light.x,(p.y-s*.7)-light.y)),mx=Math.max(...ds);
+    const far=spots.filter((p,i)=>ds[i]>=mx*.85);if(far.length)ts=pick(far)}
+  let cs;do{cs=pick(spots)}while(cs===ts&&spots.length>1);
   thief={x:ts.x,y:ts.y,s,k:ts.k};cat={x:cs.x,y:cs.y,s:s*.8,k:cs.k,spot:cs,run:null,dir:1};catSpots=spots;thiefSpot=ts;catT=-9;
   bats=[spawnBat(),spawnBat()];
   state='hide';found=0;dinged=false;catLit=false;
@@ -228,7 +239,7 @@ const tc=()=>({x:thief.x,y:thief.y-thief.s*.7});
 function catchIt(){
   if(state!=='hide')return;state='caught';stT=now;caught++;sCatch();renderStars();
   const c=tc();for(let i=0;i<40;i++){const a=Math.random()*Math.PI*2,v=rnd(120,420);parts.push({x:c.x,y:c.y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-150,l:1,c:pick(['#ffd23f','#ff6b6b','#6be3ff','#9dff6b','#fff'])})}
-  setTimeout(()=>{if(caught>=GOAL){winEl.classList.add('on');sWin();firework()}else newRound()},2300);
+  setTimeout(()=>{if(caught>=GOAL){winEl.classList.add('on');sWin();firework()}else newRound()},Math.round((SIREN*PER+.7)*1000));
 }
 function firework(){for(let k=0;k<5;k++)setTimeout(()=>{const x=rnd(W*.15,W*.85),y=rnd(H*.15,H*.5);for(let i=0;i<50;i++){const a=Math.random()*Math.PI*2,v=rnd(80,320);parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:1.2,c:pick(['#ffd23f','#ff6b6b','#6be3ff','#c38bff'])})}tone(rnd(500,900),.25,'triangle',0,.1)},k*450)}
 function renderStars(){[...starsEl.children].forEach((e,i)=>e.classList.toggle('on',i<caught))}
@@ -288,6 +299,10 @@ function draw(ts){
   if(!cat.run&&cd>r*.7&&reveal<.5)catEyes(cat,.55+.3*Math.sin(t*1.5));
   catBubble(cat,t);
 
+  if(state==='caught'&&t-stT<SIREN*PER){/* 경찰차 경광등: 빨강·파랑 번갈아 */
+    const on=Math.floor((t-stT)/(PER/2))%2,cl=on?'255,40,60':'40,110,255',gx=on?0:W,pulse=.55+.45*Math.abs(Math.sin((t-stT)*Math.PI*2/PER*2));
+    ctx.save();ctx.globalCompositeOperation='lighter';const gg=ctx.createRadialGradient(gx,0,0,gx,0,Math.max(W,H)*.7);
+    gg.addColorStop(0,`rgba(${cl},${.55*pulse})`);gg.addColorStop(1,`rgba(${cl},0)`);ctx.fillStyle=gg;ctx.fillRect(0,0,W,H);ctx.restore()}
   if(state==='caught'){const c=tc(),k=Math.min(1,(t-stT)*3);ctx.save();ctx.translate(c.x,c.y-thief.s*.75);ctx.scale(k,k);
     ctx.font=`${Math.max(24,S*.08)}px Jua,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
     const tw=ctx.measureText('잡았다!').width;rr(-tw/2-18,-S*.06,tw+36,S*.12,S*.06);ctx.fillStyle='#fff';ctx.fill();
