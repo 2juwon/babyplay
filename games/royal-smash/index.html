@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../icons/apple-touch-icon.png">
+<link rel="icon" href="../../icons/icon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#5aa9ff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="태오플레이">
 <title>로얄 스매시</title>
 <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
 <link href="../../shared/bp.css" rel="stylesheet">
@@ -27,4 +34,5 @@ iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
     <iframe src="https://2juwon.github.io/royal-smash/" title="로얄 스매시" allow="autoplay; fullscreen"></iframe>
   </div>
 </div>
+<script>if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("../../sw.js",{scope:"../../"}).catch(()=>{}))</script>
 </body></html>

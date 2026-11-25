@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#ffe48a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="태오플레이">
 <title>태오플레이</title>
 <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
 <style>
@@ -31,6 +38,12 @@ h1 span:nth-child(5){animation-delay:.48s;color:#9a5bd8;text-shadow:0 5px 0 #5e3
 .go:active{transform:translateY(6px);box-shadow:0 2px 0 #8f1f1f}
 .go:focus-visible{outline:4px solid var(--ink);outline-offset:4px}
 .go svg{width:30px;height:30px}
+.inst{font:inherit;font-size:18px;min-height:48px;padding:10px 24px;border-radius:999px;border:3px solid var(--ink);background:#fff8dc;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.inst:focus-visible{outline:4px solid var(--ink);outline-offset:3px}
+.inst svg{width:22px;height:22px}
+.tip b{font-weight:400;white-space:nowrap;text-decoration:underline}
+.tip{margin:0;font-size:16px;opacity:.75;max-width:30em;text-wrap:balance}
+[hidden]{display:none!important}
 @media(prefers-reduced-motion:reduce){h1 span,.pop{animation:none}}
 </style></head><body>
 <main>
@@ -57,5 +70,20 @@ h1 span:nth-child(5){animation-delay:.48s;color:#9a5bd8;text-shadow:0 5px 0 #5e3
   <a class="go" href="menu.html">놀러 가기
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l8 7-8 7" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </a>
+  <button class="inst" id="inst" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>앱으로 설치하기</button>
+  <p class="tip" id="tip" hidden>사파리 아래 공유 버튼을 누르고 <b>홈 화면에 추가</b>를 고르면 앱처럼 쓸 수 있어요</p>
 </main>
+<script>
+{
+  const btn=document.getElementById('inst'),tip=document.getElementById('tip');
+  const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+  let ev=null;
+  addEventListener('beforeinstallprompt',e=>{e.preventDefault();ev=e;if(!standalone)btn.hidden=false});
+  btn.addEventListener('click',async()=>{if(!ev)return;ev.prompt();try{await ev.userChoice}catch(_){}ev=null;btn.hidden=true});
+  addEventListener('appinstalled',()=>{btn.hidden=true});
+  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  if(ios&&!standalone)tip.hidden=false;
+}
+</script>
+<script>if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js",{scope:"./"}).catch(()=>{}))</script>
 </body></html>

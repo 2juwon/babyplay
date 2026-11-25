@@ -9,6 +9,9 @@ index.html            첫 화면(태오플레이 랜딩)
 menu.html             놀이 고르기: 게임 카드 목록
 games.js              게임 목록(menu.html이 이걸 읽어 카드를 그려요)
 shared/bp.css         공통 스타일(홈 버튼 등)
+manifest.webmanifest  앱 설치 정보
+sw.js                 서비스 워커(설치·오프라인)
+icons/                앱 아이콘
 games/<id>/index.html 각 게임
 games/<id>/thumb.svg  메인 카드 그림(정사각형)
 ```
@@ -22,6 +25,11 @@ games/<id>/thumb.svg  메인 카드 그림(정사각형)
    ```
 3. `games/<id>/thumb.svg`에 카드 그림을 넣어요.
 4. `games.js`의 `BP_GAMES`에 항목을 하나 추가해요.
+
+## 앱으로 설치
+
+`manifest.webmanifest`와 `sw.js`로 홈 화면에 설치할 수 있어요(PWA). 안드로이드 크롬은 첫 화면의 "앱으로 설치하기" 버튼, 아이폰·아이패드는 사파리 공유 → 홈 화면에 추가.
+게임을 추가하면 `sw.js`의 `CORE` 목록에 경로를 넣고 `CACHE` 이름의 숫자를 올려 주세요(예: `babyplay-v2`). 새 게임 페이지 `<head>`에도 다른 게임처럼 manifest·아이콘 태그와 서비스 워커 등록 줄을 넣어요.
 
 ## 로컬에서 보기
 
