@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../icons/apple-touch-icon.png">
+<link rel="icon" href="../../icons/icon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#bfe8ff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="태오플레이">
+<title>알 키우기</title>
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<link href="../../shared/bp.css" rel="stylesheet">
+<style>
+/* 알 키우기: 톡톡 두드리면 알이 조금씩 깨지고, 동물 친구가 태어나요. 20마리 모으기. */
+:root{--ink:#4a2d00;--sun:#ffd23f}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;color:var(--ink);font:17px/1.4 Jua,system-ui,sans-serif;overflow:hidden;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;overscroll-behavior:none;touch-action:manipulation;
+  background:linear-gradient(#bfe8ff 0%,#e6f6ff 55%,#fff3c9 100%)}
+.app{display:flex;flex-direction:column;height:100vh;height:100dvh}
+header{display:flex;align-items:center;gap:12px;padding:10px 16px}
+h1{font-size:clamp(22px,5.5vw,32px);margin:0;font-weight:400;line-height:1.05;color:#7a4a00}
+.stage{position:relative;flex:1;overflow:hidden;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.stage.shake{animation:shake .5s 3}
+@keyframes shake{0%,100%{transform:none}25%{transform:translate(-6px,3px)}50%{transform:translate(6px,-3px)}75%{transform:translate(-4px,-2px)}}
+.grass{position:absolute;left:-10%;right:-10%;bottom:-38vmin;height:62vmin;border-radius:50%;background:#9bdc6a;box-shadow:inset 0 10px 0 #b7ea8a}
+.nest{position:absolute;left:50%;bottom:12%;width:min(70vmin,380px);height:min(20vmin,110px);transform:translateX(-50%);border-radius:50%;
+  background:repeating-linear-gradient(20deg,#b77b3c 0 6px,#d39a55 6px 12px,#9a6330 12px 15px);box-shadow:0 8px 0 #7a4c22}
+.egg{position:absolute;left:50%;bottom:calc(12% + min(7vmin,40px));width:min(48vmin,270px);transform-origin:50% 100%;translate:-50% 0;transition:scale .25s}
+.egg svg{display:block;width:100%;height:auto;transform-origin:50% 100%}
+.egg.alive svg{animation:alive 1.3s ease-in-out infinite}
+@keyframes alive{0%,70%,100%{transform:none}78%{transform:rotate(4deg)}86%{transform:rotate(-4deg)}94%{transform:rotate(2deg)}}
+.egg.pop{animation:eggin .45s cubic-bezier(.3,1.6,.5,1)}
+@keyframes eggin{from{transform:translateY(-40vh)}to{transform:none}}
+.peek .eye{animation:blink 2.4s infinite;transform-origin:center;transform-box:fill-box}
+@keyframes blink{0%,90%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+.shell{pointer-events:none;position:absolute;left:50%;bottom:calc(12% + min(7vmin,40px));width:min(48vmin,270px);translate:-50% 0;display:none;z-index:2}
+.shell svg{display:block;width:100%}
+.animal{position:absolute;left:50%;bottom:calc(12% + min(23vmin,130px));translate:-50% 0;display:none;z-index:1;font-size:min(40vmin,220px);line-height:1;cursor:pointer}
+.animal.on{display:block;animation:popin .6s cubic-bezier(.3,1.7,.5,1)}
+@keyframes popin{from{transform:scale(0) translateY(30%)}to{transform:none}}
+.animal .em{display:inline-block;transform-origin:50% 90%}
+.a-hop{animation:hop .9s ease-in-out}
+@keyframes hop{0%,50%,100%{transform:none}25%{transform:translateY(-22%)}75%{transform:translateY(-12%)}}
+.a-jump{animation:jump 1s ease-in-out}
+@keyframes jump{0%,100%{transform:none}15%{transform:scale(1.15,.8)}40%{transform:translateY(-45%) scale(.9,1.15)}70%{transform:none}80%{transform:scale(1.1,.9)}}
+.a-wag{animation:wag .9s ease-in-out}
+@keyframes wag{0%,100%{transform:none}15%{transform:rotate(-14deg)}35%{transform:rotate(14deg)}55%{transform:rotate(-12deg)}75%{transform:rotate(10deg)}}
+.a-stretch{animation:stretch 1s ease-in-out}
+@keyframes stretch{0%,100%{transform:none}30%{transform:scale(1.3,.8)}60%{transform:scale(.88,1.18)}}
+.a-spin{animation:spin .9s ease-in-out}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.a-nod{animation:nod 1.3s ease-in-out}
+@keyframes nod{0%,100%{transform:none}25%{transform:rotate(10deg) translateY(4%)}50%{transform:rotate(-6deg)}75%{transform:rotate(8deg) translateY(3%)}}
+.a-waddle{animation:waddle .9s ease-in-out}
+@keyframes waddle{0%,100%{transform:none}20%{transform:translateX(-10%) rotate(-12deg)}40%{transform:translateX(0) rotate(0)}60%{transform:translateX(10%) rotate(12deg)}80%{transform:none}}
+.a-roar{animation:roar 1s ease-in-out}
+@keyframes roar{0%,100%{transform:none}20%{transform:scale(1.3)}30%,50%,70%{transform:scale(1.3) translateX(-4%)}40%,60%,80%{transform:scale(1.3) translateX(4%)}}
+.a-stomp{animation:stomp 1.5s ease-in-out}
+@keyframes stomp{0%,100%{transform:none}15%,45%,75%{transform:translateY(-12%) rotate(-6deg)}30%,60%,90%{transform:scale(1.15,.88)}}
+.a-trumpet{animation:trumpet 1.2s ease-in-out}
+@keyframes trumpet{0%,100%{transform:none}30%{transform:rotate(-14deg) scale(1.2)}70%{transform:rotate(-10deg) scale(1.15)}}
+.bubble{position:absolute;left:50%;top:6%;translate:-50% 0;background:#fff;border-radius:28px;padding:10px 26px;font-size:clamp(30px,9vw,52px);color:#e2552b;box-shadow:0 6px 0 rgba(0,0,0,.1);white-space:nowrap;z-index:3;opacity:0;transform:scale(.4);transition:opacity .2s,transform .3s cubic-bezier(.3,1.7,.5,1);pointer-events:none}
+.bubble::after{content:"";position:absolute;left:50%;bottom:-14px;margin-left:-14px;border:14px solid transparent;border-top-color:#fff;border-bottom:0}
+.bubble.on{opacity:1;transform:none}
+.name{position:absolute;left:16px;bottom:20px;font-size:clamp(26px,7vw,40px);color:#fff;text-shadow:0 3px 0 #5a8a2a;z-index:3;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+.name.on{opacity:1}
+.hint{position:absolute;left:0;right:0;top:8%;text-align:center;font-size:clamp(24px,7vw,40px);color:#7a4a00;pointer-events:none;animation:pulse 1.4s ease-in-out infinite;transition:opacity .3s}
+.hint.off{opacity:0;animation:none}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.again{position:absolute;right:16px;bottom:16px;z-index:4;font:inherit;font-size:26px;padding:12px 26px;border-radius:999px;border:0;background:var(--sun);color:#3a2600;min-height:60px;box-shadow:0 6px 0 #b88400;cursor:pointer;display:none;animation:popin .5s cubic-bezier(.3,1.7,.5,1)}
+.again.on{display:block}
+.again:active{transform:translateY(4px);box-shadow:0 2px 0 #b88400}
+.again:focus-visible,.win button:focus-visible{outline:3px solid #fff;outline-offset:4px}
+.bit{position:absolute;z-index:5;pointer-events:none}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:6}
+footer{display:grid;grid-template-columns:repeat(10,1fr);gap:4px 4px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:#7cc24f}
+.slot{aspect-ratio:1;max-height:40px;justify-self:center;width:100%;max-width:40px;border-radius:50%;background:#5fa337;display:grid;place-items:center;font-size:clamp(17px,5vw,28px);color:#3e7a20;box-shadow:inset 0 3px 0 rgba(0,0,0,.15)}
+.slot.got{background:#fff8dc;box-shadow:0 3px 0 #c9a84a}
+.slot.new{animation:slotpop .8s cubic-bezier(.3,1.7,.5,1) 2}
+@keyframes slotpop{0%{transform:scale(1)}40%{transform:scale(1.6)}100%{transform:scale(1)}}
+.win{position:absolute;inset:0;display:none;place-items:center;background:rgba(255,243,201,.75);z-index:7}
+.win.on{display:grid}
+.win .card{text-align:center;padding:20px}
+.win p{font-size:clamp(32px,8.5vw,56px);margin:0 0 10px;color:#e2552b;line-height:1.15;text-shadow:0 4px 0 #fff}
+.win .all{font-size:clamp(24px,6.5vw,38px);max-width:520px;margin-inline:auto;margin-bottom:22px;line-height:1.3}
+.win button{font:inherit;font-size:26px;padding:14px 40px;border-radius:999px;border:0;background:var(--sun);color:#3a2600;min-height:60px;box-shadow:0 6px 0 #b88400;cursor:pointer}
+</style></head><body>
+<div class="app">
+  <header><a class="bp-home" href="../../menu.html" aria-label="홈으로"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5" fill="none" stroke="#3a2600" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10v9.5h4.5V15h3v4.5H18V10" fill="#3a2600"/></svg></a><h1>알 키우기</h1></header>
+  <div class="stage" id="stage">
+    <div class="grass"></div>
+    <div class="hint" id="hint">알을 톡톡 두드려 봐!</div>
+    <div class="bubble" id="bubble"></div>
+    <div class="nest"></div>
+    <div class="animal" id="animal" role="button" aria-label="동물 친구"><span class="em" id="em"></span></div>
+    <div class="shell" id="shell"></div>
+    <div class="egg" id="egg" role="button" aria-label="알"></div>
+    <div class="name" id="name"></div>
+    <button class="again" id="again">새 알 🥚</button>
+    <div class="flash" id="flash"></div>
+    <div class="win" id="win"><div class="card"><p>태오 최고!<br>동물 친구 20마리를 다 모았어요!</p><div class="all" id="all"></div><button id="ok">좋아!</button></div></div>
+  </div>
+  <footer id="dex" aria-label="모은 동물"></footer>
+</div>
+<script>
+{
+/* ---------- 소리 ---------- */
+let ac=null,master=null,noiseBuf=null;
+function au(){try{if(!ac){ac=new(window.AudioContext||window.webkitAudioContext)();master=ac.createDynamicsCompressor();master.connect(ac.destination);
+  noiseBuf=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}
+  if(ac.state==='suspended')ac.resume();loadSounds()}catch(e){}}
+function env(p,t,d,v){p.setValueAtTime(.0001,t);p.exponentialRampToValueAtTime(v,t+Math.min(.02,d*.2));p.setValueAtTime(v,t+d*.7);p.exponentialRampToValueAtTime(.0001,t+d)}
+/* V: 목소리 하나. f=[[시간,주파수],...], k=음높이 배율(클수록 높고 빠르게) */
+function V(o,k=1){if(!ac)return;const t=ac.currentTime+(o.w||0)/k,d=o.d/k;
+  const osc=ac.createOscillator();osc.type=o.type||'sawtooth';
+  o.f.forEach(([tt,f],i)=>{const at=t+tt/k;i?osc.frequency.linearRampToValueAtTime(f*k,at):osc.frequency.setValueAtTime(f*k,at)});
+  if(o.vib){const l=ac.createOscillator(),lg=ac.createGain();l.frequency.value=o.vib;lg.gain.value=o.va*k;l.connect(lg).connect(osc.frequency);l.start(t);l.stop(t+d+.05)}
+  let out=osc;
+  if(o.lp||o.bp){const f=ac.createBiquadFilter();f.type=o.lp?'lowpass':'bandpass';f.frequency.value=(o.lp||o.bp)*k;f.Q.value=o.q||1;out.connect(f);out=f}
+  if(o.am){const a=ac.createGain(),l=ac.createOscillator(),lg=ac.createGain(),dp=o.ad||.5;a.gain.value=1-dp/2;l.frequency.value=o.am*k;lg.gain.value=dp/2;l.connect(lg).connect(a.gain);l.start(t);l.stop(t+d+.05);out.connect(a);out=a}
+  const g=ac.createGain();env(g.gain,t,d,o.v||.3);out.connect(g).connect(master);osc.start(t);osc.stop(t+d+.05)}
+function N(o,k=1){if(!ac)return;const t=ac.currentTime+(o.w||0)/k,d=o.d/k;
+  const s=ac.createBufferSource();s.buffer=noiseBuf;const f=ac.createBiquadFilter();f.type=o.lp?'lowpass':'bandpass';f.Q.value=o.q||1;
+  f.frequency.setValueAtTime((o.lp||o.bp)*k,t);if(o.f1)f.frequency.exponentialRampToValueAtTime(o.f1*k,t+d);
+  const g=ac.createGain();env(g.gain,t,d,o.v||.2);s.connect(f).connect(g).connect(master);s.start(t);s.stop(t+d+.05)}
+const tone=(f,d,type,w,v,f2)=>V({type:type||'sine',f:f2?[[0,f],[d,f2]]:[[0,f]],d,w,v});
+
+/* ---------- 동물 20마리 ----------
+   소리는 games/egg/sounds/ 의 실제 녹음 파일(CC0·CC BY, 출처는 sounds/CREDITS.md).
+   s=파일 이름, r=기본 재생 속도, n=반복 횟수 */
+const ANIMALS=[
+ {e:'🐥',name:'병아리',say:'삐약삐약!',anim:'hop',egg:'#fff4b8',spot:'#ffd95a',s:'chick',r:1.25,n:2},
+ {e:'🐶',name:'강아지',say:'멍멍!',anim:'wag',egg:'#ffe2c2',spot:'#c98a4b',s:'dog',r:1,n:1},
+ {e:'🐱',name:'고양이',say:'야옹~',anim:'stretch',egg:'#ffe3ef',spot:'#ff9fc2',s:'cat',r:1,n:1},
+ {e:'🐷',name:'돼지',say:'꿀꿀!',anim:'spin',egg:'#ffd3d8',spot:'#ff8fa0',s:'pig',r:1,n:2,gap:.08},
+ {e:'🐮',name:'송아지',say:'음매~',anim:'nod',egg:'#f4f4f4',spot:'#3a3a3a',s:'cow',r:1,n:1},
+ {e:'🦆',name:'오리',say:'꽥꽥!',anim:'waddle',egg:'#d9f2ff',spot:'#7cc4ec',s:'duck',r:1,n:2,gap:.06},
+ {e:'🐸',name:'개구리',say:'개굴개굴!',anim:'jump',egg:'#dff7c8',spot:'#7ccb4a',s:'frog',r:1,n:1},
+ {e:'🦁',name:'사자',say:'어흥!',anim:'roar',egg:'#ffe39a',spot:'#e0a12a',s:'lion',r:1,n:1},
+ {e:'🦖',name:'공룡',say:'크아앙!',anim:'stomp',egg:'#cdeccf',spot:'#4f9a5a',s:'dino',r:.72,n:1},
+ {e:'🐘',name:'코끼리',say:'뿌우~',anim:'trumpet',egg:'#e3e4f7',spot:'#9a9cc8',s:'elephant',r:1,n:1},
+ {e:'🐑',name:'양',say:'메에~',anim:'hop',egg:'#fbfbf4',spot:'#d9d6c3',s:'sheep',r:1,n:1},
+ {e:'🐴',name:'말',say:'히히힝!',anim:'jump',egg:'#f0dcc4',spot:'#8a5a33',s:'horse',r:1,n:1},
+ {e:'🐓',name:'닭',say:'꼬끼오!',anim:'nod',egg:'#ffe9d6',spot:'#e2552b',s:'rooster',r:1,n:1},
+ {e:'🦉',name:'부엉이',say:'부엉부엉',anim:'wag',egg:'#e6dccf',spot:'#7a5c3e',s:'owl',r:1,n:1},
+ {e:'🐵',name:'원숭이',say:'우끼끼!',anim:'jump',egg:'#f5e1c8',spot:'#a66b3a',s:'monkey',r:1,n:1},
+ {e:'🐧',name:'펭귄',say:'꽉꽉!',anim:'waddle',egg:'#e8f3fb',spot:'#2f3b4a',s:'penguin',r:1,n:2,gap:.08},
+ {e:'🐻',name:'곰',say:'으르렁!',anim:'stomp',egg:'#ecd9c6',spot:'#7a4c22',s:'bear',r:1,n:1},
+ {e:'🐯',name:'호랑이',say:'크르릉!',anim:'roar',egg:'#ffe0b8',spot:'#f08a1c',s:'tiger',r:1,n:1},
+ {e:'🐭',name:'생쥐',say:'찍찍!',anim:'spin',egg:'#efeff2',spot:'#b7b7c4',s:'mouse',r:1,n:1},
+ {e:'🦜',name:'앵무새',say:'안녕?',anim:'hop',egg:'#dcf5e4',spot:'#e23b3b',s:'parrot',r:1,n:2,gap:.1}
+];
+const BUF={};let loading=false;
+function loadSounds(){if(loading||!ac)return;loading=true;
+  ANIMALS.forEach(a=>fetch('sounds/'+a.s+'.mp3').then(r=>r.arrayBuffer()).then(ab=>new Promise((ok,no)=>ac.decodeAudioData(ab,ok,no))).then(b=>{BUF[a.s]=b}).catch(()=>{}))}
+// k: 1보다 크면 빠르고 높은 목소리, 작으면 느리고 굵은 목소리
+function cry(a,k){const b=BUF[a.s];if(!ac||!b)return;const rate=a.r*k;let t=ac.currentTime;
+  for(let i=0;i<a.n;i++){const src=ac.createBufferSource(),g=ac.createGain();src.buffer=b;src.playbackRate.value=rate;g.gain.value=.9;
+    src.connect(g).connect(master);src.start(t);t+=b.duration/rate+(a.gap||.12)}}
+const josa=w=>{const c=w.charCodeAt(w.length-1)-0xAC00;return c>=0&&c%28?'이':'가'};
+function speak(txt){try{const s=speechSynthesis,u=new SpeechSynthesisUtterance(txt);u.lang='ko-KR';u.rate=.95;u.pitch=1.4;s.cancel();s.speak(u)}catch(e){}}
+const buzz=ms=>{try{navigator.vibrate&&navigator.vibrate(ms)}catch(e){}};
+
+/* ---------- 도감 ---------- */
+const KEY='bp-egg-found';
+let found=[];try{found=JSON.parse(localStorage.getItem(KEY))||[]}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(found))}catch(e){}};
+const $=id=>document.getElementById(id);
+const stage=$('stage'),eggEl=$('egg'),shellEl=$('shell'),animalEl=$('animal'),em=$('em'),bubble=$('bubble'),nameEl=$('name'),hint=$('hint'),again=$('again'),dex=$('dex'),win=$('win');
+function drawDex(newI){dex.innerHTML=ANIMALS.map((a,i)=>found.includes(i)?`<div class="slot got${i===newI?' new':''}">${a.e}</div>`:'<div class="slot">?</div>').join('')}
+drawDex();
+
+/* ---------- 알 ---------- */
+const EGG='M100 8C152 8 188 96 188 152C188 208 148 234 100 234C52 234 12 208 12 152C12 96 48 8 100 8Z';
+const rnd=(a,b)=>a+Math.random()*(b-a);
+let state='egg',cur=0,need=8,taps=0,cracks=[];
+function pickAnimal(){const left=ANIMALS.map((_,i)=>i).filter(i=>!found.includes(i)&&i!==cur);const pool=left.length?left:ANIMALS.map((_,i)=>i).filter(i=>i!==cur);return pool[Math.floor(Math.random()*pool.length)]}
+function crackPath(){let x=rnd(40,160),y=rnd(60,200),dir=x<100?1:-1,p=`M${x.toFixed(0)} ${y.toFixed(0)}`;
+  for(let i=0;i<4;i++){x+=dir*rnd(10,22);y+=(i%2?1:-1)*rnd(8,16);p+=` L${x.toFixed(0)} ${y.toFixed(0)}`}return p}
+function newEgg(){
+  cur=pickAnimal();const a=ANIMALS[cur];need=7+Math.floor(Math.random()*4);taps=0;state='egg';
+  const spots=Array.from({length:7},()=>`<circle cx="${rnd(30,170).toFixed(0)}" cy="${rnd(40,220).toFixed(0)}" r="${rnd(7,16).toFixed(0)}"/>`).join('');
+  cracks=Array.from({length:need-1},crackPath);
+  eggEl.innerHTML=`<svg viewBox="0 0 200 240"><defs><clipPath id="ec"><path d="${EGG}"/></clipPath><radialGradient id="eg" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff"/><stop offset=".35" stop-color="${a.egg}"/><stop offset="1" stop-color="${a.egg}"/></radialGradient></defs>
+    <path d="${EGG}" fill="url(#eg)" stroke="#00000022" stroke-width="3"/>
+    <g clip-path="url(#ec)"><g fill="${a.spot}" opacity=".55">${spots}</g>
+    <g class="peek" id="peek" style="display:none"><ellipse cx="100" cy="118" rx="44" ry="20" fill="#2b1a0a"/><g class="eye"><circle cx="84" cy="118" r="9" fill="#fff"/><circle cx="116" cy="118" r="9" fill="#fff"/><circle cx="86" cy="119" r="4.5" fill="#222"/><circle cx="118" cy="119" r="4.5" fill="#222"/></g></g>
+    <g fill="none" stroke="#6b4214" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">${cracks.map((p,i)=>`<path id="ck${i}" d="${p}" style="display:none"/>`).join('')}</g></g></svg>`;
+  eggEl.style.display='block';eggEl.style.scale='1';eggEl.className='egg pop';
+  shellEl.style.display='none';animalEl.classList.remove('on');bubble.classList.remove('on');nameEl.classList.remove('on');
+  again.classList.remove('on');hint.classList.remove('off');hint.textContent='알을 톡톡 두드려 봐!';
+  tone(300,.35,'sine',0,.15,700);
+}
+function sparks(x,y,n,colors,big){for(let i=0;i<n;i++){const b=document.createElement('div'),s=big?rnd(10,20):rnd(6,12),ang=rnd(0,Math.PI*2),dist=rnd(40,big?220:110);
+  b.className='bit';b.style.cssText=`left:${x-s/2}px;top:${y-s/2}px;width:${s}px;height:${s}px;border-radius:${Math.random()<.5?'50%':'3px'};background:${colors[i%colors.length]}`;
+  stage.appendChild(b);b.animate([{transform:'translate(0,0) rotate(0)',opacity:1},{transform:`translate(${Math.cos(ang)*dist}px,${Math.sin(ang)*dist+60}px) rotate(${rnd(-360,360)}deg)`,opacity:0}],{duration:rnd(600,1100),easing:'cubic-bezier(.2,.7,.4,1)'}).onfinish=()=>b.remove()}}
+function local(e){const r=stage.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+function eggCenter(){const r=stage.getBoundingClientRect(),q=eggEl.getBoundingClientRect();return{x:q.left-r.left+q.width/2,y:q.top-r.top+q.height/2,w:q.width}}
+function tapEgg(e){
+  taps++;const p=taps/need;
+  for(let i=0;i<Math.min(taps,cracks.length);i++){const c=document.getElementById('ck'+i);if(c)c.style.display=''}
+  if(taps>=need-2){const pk=document.getElementById('peek');if(pk)pk.style.display=''}
+  hint.classList.add('off');
+  if(taps>=need){hatch();return}
+  // 톡! 점점 높아지는 소리
+  tone(420+taps*70,.09,'triangle',0,.3);N({d:.05,bp:3200,q:2,v:.25});if(p>.6)tone(1200+taps*50,.06,'sine',.05,.12);
+  buzz(18+taps*3);
+  const a=5+p*16,sv=svg();eggEl.style.scale=String(1+p*.1);
+  if(sv)sv.animate([{transform:'none'},{transform:`rotate(${a}deg) scale(1.05,.93)`},{transform:`rotate(${-a}deg)`},{transform:`rotate(${a*.4}deg)`},{transform:'none'}],{duration:380,easing:'ease-out'});
+  if(p>=.5)eggEl.classList.add('alive');
+  const pt=local(e);sparks(pt.x,pt.y,6+taps,['#fff','#ffd23f','#ffb3c7',ANIMALS[cur].spot]);
+}
+const svg=()=>eggEl.querySelector('svg');
+function hatch(){
+  state='hatching';const a=ANIMALS[cur],c=eggCenter();
+  N({d:.35,lp:3000,f1:600,v:.5});tone(200,.2,'square',0,.15,90);
+  [523,659,784,1047,1319].forEach((n,i)=>tone(n,.25,'triangle',.15+i*.08,.18));
+  buzz([40,30,80]);
+  $('flash').animate([{opacity:.85},{opacity:0}],{duration:400});
+  // 알 껍데기 조각
+  for(let i=0;i<10;i++){const b=document.createElement('div'),s=c.w*rnd(.14,.24),ang=-Math.PI/2+rnd(-1.3,1.3),dist=rnd(c.w*.6,c.w*1.3);
+    b.className='bit';b.style.cssText=`left:${c.x-s/2}px;top:${c.y-s/2}px;width:${s}px;height:${s}px;background:${a.egg};border:3px solid #00000018;clip-path:polygon(${rnd(0,40)}% 0,100% ${rnd(10,50)}%,${rnd(60,100)}% 100%,0 ${rnd(40,90)}%)`;
+    stage.appendChild(b);b.animate([{transform:'translate(0,0) rotate(0)',opacity:1},{transform:`translate(${Math.cos(ang)*dist}px,${Math.sin(ang)*dist+c.w*.9}px) rotate(${rnd(-540,540)}deg)`,opacity:0}],{duration:1100,easing:'cubic-bezier(.2,.6,.5,1)'}).onfinish=()=>b.remove()}
+  sparks(c.x,c.y,26,['#ffd23f','#ff7aa8','#7cd3ff','#9be36b','#fff'],true);
+  eggEl.style.display='none';
+  shellEl.innerHTML=`<svg viewBox="0 0 200 120"><path d="M12 22L32 6 50 26 70 4 88 24 106 2 124 24 144 4 162 26 188 10C190 70 150 116 100 116C50 116 12 80 12 22Z" fill="${a.egg}" stroke="#00000022" stroke-width="3"/><g fill="${a.spot}" opacity=".55"><circle cx="50" cy="70" r="10"/><circle cx="140" cy="60" r="13"/><circle cx="100" cy="95" r="8"/></g></svg>`;
+  shellEl.style.display='block';
+  em.textContent=a.e;em.className='em';animalEl.classList.remove('on');void animalEl.offsetWidth;animalEl.classList.add('on');
+  nameEl.textContent=a.name;
+  const isNew=!found.includes(cur);
+  if(isNew){found.push(cur);save()}
+  setTimeout(()=>{nameEl.classList.add('on');talk(1)},450);
+  setTimeout(()=>{speak(isNew?`새 친구 ${a.name}${josa(a.name)} 태어났어요!`:`${a.name}${josa(a.name)} 또 태어났어요!`)},2100);
+  setTimeout(()=>{drawDex(isNew?cur:-1)},900);
+  setTimeout(()=>{state='out';again.classList.add('on')},1800);
+  if(isNew&&found.length===ANIMALS.length)setTimeout(()=>{$('all').textContent=ANIMALS.map(x=>x.e).join(' ');win.classList.add('on');
+    [523,659,784,1047,784,1047,1319].forEach((n,i)=>tone(n,.3,'triangle',i*.13,.2));speak('우와! 동물 친구 스무 마리를 다 모았어요!')},4200);
+}
+let bubbleT=0;
+function talk(k,txt){const a=ANIMALS[cur];cry(a,k);
+  bubble.textContent=txt||a.say;bubble.classList.remove('on');void bubble.offsetWidth;bubble.classList.add('on');
+  clearTimeout(bubbleT);bubbleT=setTimeout(()=>bubble.classList.remove('on'),1600);
+  em.className='em';void em.offsetWidth;em.className='em a-'+a.anim;
+  if(a.anim==='stomp'){stage.classList.remove('shake');void stage.offsetWidth;stage.classList.add('shake');buzz([60,60,60,60,60])}}
+// 동물을 누르면 다시 울어요. 가끔은 다람쥐 목소리, 가끔은 아주 굵은 목소리!
+function tapAnimal(e){const a=ANIMALS[cur],r=Math.random();let k=rnd(.9,1.15),txt=a.say;
+  if(r<.2){k=1.8;txt=a.say.replace(/[!~]$/,'')+'?!'}else if(r<.32){k=.6;txt=a.say.replace(/[!~]$/,'')+'~~~'}
+  tone(220,.15,'sine',0,.15,620);talk(k,txt);buzz(25);const pt=local(e);sparks(pt.x,pt.y,8,['#ffd23f','#ff7aa8','#fff'])}
+
+stage.addEventListener('pointerdown',e=>{au();
+  if(e.target.closest('.again')||e.target.closest('.win'))return;
+  if(state==='egg')tapEgg(e);
+  else if(state==='out')tapAnimal(e); // 어디를 눌러도 동물이 울어요
+});
+again.addEventListener('click',()=>{au();newEgg()});
+$('ok').addEventListener('click',()=>win.classList.remove('on'));
+eggEl.addEventListener('animationend',e=>{if(e.animationName==='eggin')eggEl.classList.remove('pop')});
+newEgg();
+}
+</script>
+<script>if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("../../sw.js",{scope:"../../"}).catch(()=>{}))</script>
+</body></html>

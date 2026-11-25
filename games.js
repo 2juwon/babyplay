@@ -23,5 +23,13 @@ window.BP_GAMES = [
     path: 'games/shapes/',
     thumb: 'games/shapes/thumb.svg',
     color: '#ff9f43'
+  },
+  {
+    id: 'egg',
+    title: '알 키우기',
+    desc: '톡톡 두드리면 동물 친구가 태어나요',
+    path: 'games/egg/',
+    thumb: 'games/egg/thumb.svg',
+    color: '#ffd23f'
   }
 ];
