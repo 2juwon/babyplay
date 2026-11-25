@@ -15,5 +15,13 @@ window.BP_GAMES = [
     path: 'games/royal-smash/',
     thumb: 'games/royal-smash/thumb.svg',
     color: '#5aa9ff'
+  },
+  {
+    id: 'shapes',
+    title: '모양 맞추기',
+    desc: '웃는 모양 블록을 같은 구멍에 쏙 넣어요',
+    path: 'games/shapes/',
+    thumb: 'games/shapes/thumb.svg',
+    color: '#ff9f43'
   }
 ];
