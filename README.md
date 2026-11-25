@@ -33,3 +33,4 @@ python3 -m http.server 8000
 ## 게임
 
 - **손전등 도둑 찾기** (`games/flashlight`): 손가락으로 깜깜한 마을을 비춰 숨은 도둑을 찾아요. 5명을 잡으면 끝. 고양이(야옹)와 박쥐(비추면 날아가요)도 숨어 있어요.
+- **로얄 스매시** (`games/royal-smash`): 대포로 구슬을 쏴 원탁 위 블록을 떨어뜨려요. 게임 본체는 [2juwon/royal-smash](https://github.com/2juwon/royal-smash)에 있고, 여기서는 홈 버튼을 얹어 iframe으로 불러와요.

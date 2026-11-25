@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>로얄 스매시</title>
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<link href="../../shared/bp.css" rel="stylesheet">
+<style>
+/* 로얄 스매시는 별도 리포지토리(2juwon/royal-smash)의 게임이라 그대로 불러오고,
+   위에 태오플레이 홈 버튼 줄만 얹어요. 게임이 고쳐지면 여기도 자동으로 따라가요. */
+:root{color-scheme:light}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;background:#7ec3ff;color:#2a1f3d;font:17px/1.4 Jua,system-ui,sans-serif;overflow:hidden;-webkit-user-select:none;user-select:none}
+.app{display:flex;flex-direction:column;height:100vh;height:100dvh}
+header{display:flex;align-items:center;gap:12px;padding:8px 16px;background:#5aa9ff;box-shadow:0 3px 0 rgba(0,0,0,.08);position:relative;z-index:1}
+h1{margin:0;font-weight:400;font-size:clamp(20px,5vw,28px);line-height:1.05;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.15)}
+.stage{position:relative;flex:1}
+iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+.load{position:absolute;inset:0;display:grid;place-items:center;font-size:22px;color:#fff}
+</style></head><body>
+<div class="app">
+  <header>
+    <a class="bp-home" href="../../menu.html" aria-label="홈으로"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5" fill="none" stroke="#3a2600" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10v9.5h4.5V15h3v4.5H18V10" fill="#3a2600"/></svg></a>
+    <h1>로얄 스매시</h1>
+  </header>
+  <div class="stage">
+    <p class="load">불러오는 중…</p>
+    <iframe src="https://2juwon.github.io/royal-smash/" title="로얄 스매시" allow="autoplay; fullscreen"></iframe>
+  </div>
+</div>
+</body></html>
